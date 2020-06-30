@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 import threading
 
 # initialize A and B matrixes
 
 
 def initializeA():
+    #建立作業指定的 A 矩陣
     a = []
     Arow = 35
     Acolumn = 60
@@ -18,6 +20,7 @@ def initializeA():
 
 
 def initializeB():
+    #建立作業指定的 B 矩陣
     b = []
     Brow = 60
     Bcolumn = 35
@@ -32,6 +35,7 @@ def initializeB():
 
 
 def regularCross(a, b):
+    # 正常寫法的運算 for-looping
     Arow = len(a)
     Acolumn = len(a[0])
     Brow = len(b)
@@ -53,6 +57,7 @@ def regularCross(a, b):
 
 
 def SectionCross(a, b, row, result):
+    # 運算單一個 row 的函式， multithreading 寫法會運用此函式，把每個 row 的運算設立成不同的 thread 平行運算
     Arow = len(a)
     Acolumn = len(a[0])
     Brow = len(b)
@@ -65,9 +70,8 @@ def SectionCross(a, b, row, result):
         rowresult.append(cross)
     result[row] = rowresult
 
-
-
 def multithreadCross(a, b):
+    # 多執行緒寫法的 multithreading
     Arow = len(a)
     Acolumn = len(a[0])
     Brow = len(b)
@@ -77,10 +81,13 @@ def multithreadCross(a, b):
     result = list()
     for row in range(Arow):
         result.append(None)
+        # 把每個 row 的運算設立為不同的 thread ，放入 threadQueue 中
         threadQueue.append(threading.Thread(target=SectionCross, args=(a, b, row, result)))
     for row in range(Arow):
+        # 開始 threadQueue 中每一個 thread 的工作
         threadQueue[row].start()
     for row in range(Arow):
+        # 待 threadQueue 中每個 thread 都完成工作
         threadQueue[row].join()
-    
+    #輸出答案
     return result
